@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pixel 2.0</title>
+	<link rel="SHORTCUT ICON" href="../../assets/favicon.png">
+	<link rel="stylesheet" href="../../stylesheets/style.css">
+
+	<script language="javascript" src="../../lib/dat.gui/dat.gui.min.js"></script>
+</head>
+<body>
+	<div>
+		<a href="../../index.html">
+			<h1 class="name">← Back</h1>
+		</a>
+	</div>
+
+	<section id="pixel" class="container canvas-container">
+		<!-- <canvas id="canvas"></canvas> -->
+		<div id="canvas"></div>
+	</section>
+	<input id="filepicker" type="file" style="visibility:hidden" />
+	<script language="javascript" src="sketch.js"></script>
+	<script>
+		window.onload = function(){
+			var sketch = new PixelSorter3();
+			var gui = new dat.GUI();
+			sketch.init();
+
+			gui.add(sketch, 'chooseFile').name('Choose File');
+			gui.add(sketch, 'mode', {
+				'Sort Rows and Columns': 0,
+				'Sort Columns Only': 1,
+				'Sort Row Only': 2,
+				'Smear Rows and Columns': 3,
+				'Smear Columns Only': 4,
+				'Smear Row Only': 5,
+				// 'Reverse All': 3,
+				// 'Sort All Pixels': 4
+				} ).name('Sort Type').onChange(function(){sketch.init()});
+			gui.add(sketch, 'threshold', 0, 255).name('Threshold').onChange(function(){sketch.init()});
+
+
+			function handleImage(){
+				console.log('handle image')
+				if(this.files && this.files[0]){
+
+					var fileReader = new FileReader();
+					fileReader.onload = function(e){
+						sketch.source = e.target.result;
+						sketch.init();
+					}
+					fileReader.readAsDataURL(this.files[0]);
+
+					console.log('image handled')
+				}
+			}
+
+			document.getElementById('filepicker').addEventListener("change", handleImage, false);
+		}
+	</script>
+</body>
+</html>
