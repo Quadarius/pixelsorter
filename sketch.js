@@ -51,6 +51,7 @@ var PixelSorter3 = function() {
 
 			canvas.height = sdCanvas.height = height;
 			canvas.width = sdCanvas.width = width;
+			setAverageColor();
 			draw(this);
 		}
 
@@ -209,6 +210,7 @@ var PixelSorter3 = function() {
 				unsorted[i] = getPixelValue(x + i, y);
 			}
 			sorted = unsorted.sort();
+			sorted = sorted.reverse();
 
 			for(var i=0; i<sortLength; i++) {
 				setPixelValue(x + i, y, sorted[i]);
@@ -238,6 +240,7 @@ var PixelSorter3 = function() {
 			}
 
 			sorted = unsorted.sort();
+			sorted = sorted.reverse();
 
 			for(var i=0; i<sortLength; i++) {
 				setPixelValue(x, y+i, sorted[i]);
@@ -306,7 +309,7 @@ var PixelSorter3 = function() {
 		}
 	}
 ////////////////////////////////////////////////////////////////////////////////
-	function smearRow() {
+	function avgRow() {
 		var x = 0;
 		var y = currentRow;
 		var xend = 0;
@@ -317,17 +320,16 @@ var PixelSorter3 = function() {
 			if (x < 0) break;
 
 			var sortLength = xend-x;
-			var c = getPixelValue(x, y);
 
 			for(var i = 0; i < sortLength; i++) {
-				setPixelValue(x + i, y, c);
+				setPixelValue(x + i, y, avgColor);
 			}
 
 			x = xend+1;
 		}
 	}
 
-	function smearColumn(){
+	function avgColumn(){
 		var x = currentColumn,
 			y = 0,
 			yend = 0;
@@ -338,10 +340,9 @@ var PixelSorter3 = function() {
 			if (y < 0) break;
 
 			var sortLength = yend-y;
-			var c = getPixelValue(x, y);
 
 			for(var i = 0; i < sortLength; i++) {
-				setPixelValue(x, y+i, c);
+				setPixelValue(x, y+i, avgColor);
 			}
 
 			y = yend+1;
@@ -477,7 +478,8 @@ var PixelSorter3 = function() {
 		var pixelInterval = 5,
 			count = 0,
 			i = -4,
-			rgb = {r: 102, g: 102, b:102};
+			rgb = {r: 102, g: 102, b:102},
+			totalPixelCount = width*height*4;
 
 		while ((i += pixelInterval * 4) < totalPixelCount) {
 			count++;
